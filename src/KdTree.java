@@ -66,7 +66,7 @@ public class KdTree {
               transverse.left.right = null;
               transverse.left.left = null;
               transverse.left.value = p;
-              transverse.left.compareX = false; 
+              transverse.left.compareX = false;
             }
             else transverse = transverse.left;
           }
