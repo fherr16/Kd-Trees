@@ -28,10 +28,12 @@ public class KdTree {
   
   public void insert(Point2D p) {
     if (root == null) {
+      root = new Node();
       root.left = null;
       root.right = null;
       root.value = p;
       root.compareX = true;
+      count++;
     }
     else {
       Node transverse = root;
@@ -44,7 +46,9 @@ public class KdTree {
               transverse.left.right = null;
               transverse.left.left = null;
               transverse.left.value = p;
-              transverse.left.compareX = false; 
+              transverse.left.compareX = false;
+              transverse = null;
+              count++;
             }
             else transverse = transverse.left;
           }
@@ -54,7 +58,9 @@ public class KdTree {
               transverse.right.right = null;
               transverse.right.left = null;
               transverse.right.value = p;
-              transverse.right.compareX = false; 
+              transverse.right.compareX = false;
+              transverse = null;
+              count++;
             }
             else transverse = transverse.right;
           }
@@ -66,7 +72,9 @@ public class KdTree {
               transverse.left.right = null;
               transverse.left.left = null;
               transverse.left.value = p;
-              transverse.left.compareX = false;
+              transverse.left.compareX = true;
+              transverse = null;
+              count++;
             }
             else transverse = transverse.left;
           }
@@ -76,7 +84,9 @@ public class KdTree {
               transverse.right.right = null;
               transverse.right.left = null;
               transverse.right.value = p;
-              transverse.right.compareX = false; 
+              transverse.right.compareX = true; 
+              transverse = null;
+              count++;
             }
             else transverse = transverse.right;
           }
@@ -86,6 +96,31 @@ public class KdTree {
   }
   
   public boolean contains(Point2D p) {
+    
+    if (p == null)
+      throw new NullPointerException();
+    
+    if (root == null)
+      return false;
+    if (root.value == p)
+      return true;
+    
+    Node transverse = root;
+    
+    while (transverse != null) {
+      
+      if (transverse.value.equals(p))
+        return true;
+      
+      if (transverse.compareX) {
+        if (transverse.value.x() > p.x()) transverse = transverse.left;
+        else transverse = transverse.right;
+      }
+      else {
+        if (transverse.value.y() > p.y()) transverse = transverse.left;
+        else transverse = transverse.right;
+      }
+    }
     return false;
   }
   
