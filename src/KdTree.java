@@ -158,7 +158,7 @@ public class KdTree {
   
   private Point2D checkLeft(Node left, Point2D closest, Point2D p) {
     if (left != null) {
-      if (p.distanceTo(left.value) < p.distanceTo(closest) && p.distanceTo(left.value) != 0.0) closest = left.value;
+      if (p.distanceTo(left.value) < p.distanceTo(closest)) closest = left.value;
       
       Point2D leftSubTree, rightSubTree;
       
@@ -191,10 +191,30 @@ public class KdTree {
   
   private Point2D checkRight(Node right, Point2D closest, Point2D p) {
     if (right != null) {
-      if (p.distanceTo(right.value) < p.distanceTo(closest) && p.distanceTo(right.value) != 0.0) closest = right.value;
+      if (p.distanceTo(right.value) < p.distanceTo(closest)) closest = right.value;
       
-      Point2D leftSubTree = checkLeft(right.left, root.value, p);
-      Point2D rightSubTree = checkRight(right.right, root.value, p);
+      Point2D leftSubTree, rightSubTree;
+      
+      if (right.compareX && p.x() < right.value.x()) {
+        leftSubTree = checkLeft(right.left, closest, p);
+        if (p.distanceTo(leftSubTree) < (right.value.x() - p.x())) return leftSubTree;
+        rightSubTree = checkRight(right.right, closest, p);
+      }
+      else if (right.compareX && p.x() > right.value.x()){
+        rightSubTree = checkRight(right.right, closest, p);
+        if (p.distanceTo(rightSubTree) < (p.x() - right.value.x())) return rightSubTree;
+        leftSubTree = checkLeft(right.left, closest, p);
+      }
+      else if (!right.compareX && p.y() < right.value.y()) {
+        leftSubTree = checkLeft(right.left, closest, p);
+        if (p.distanceTo(leftSubTree) < (right.value.y() - p.y())) return leftSubTree;
+        rightSubTree = checkRight(right.right, closest, p);
+      }
+      else {
+        rightSubTree = checkRight(right.right, closest, p);
+        if (p.distanceTo(rightSubTree) < (p.y() - right.value.y())) return rightSubTree;
+        leftSubTree = checkLeft(right.left, closest, p);
+      }
       
       if (p.distanceTo(leftSubTree) < p.distanceTo(closest)) closest = leftSubTree;
       if (p.distanceTo(rightSubTree) < p.distanceTo(closest)) closest = rightSubTree;
