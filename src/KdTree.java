@@ -1,3 +1,6 @@
+import java.util.Iterator;
+import java.util.Vector;
+
 import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.RectHV;
 
@@ -129,7 +132,34 @@ public class KdTree {
   }
   
   public Iterable<Point2D> range(RectHV rect) {
-    return null;
+    if (rect == null)
+      throw new NullPointerException();
+    
+    return new RectIterable(rect);
+  }
+  
+  public class RectIterable implements Iterable<Point2D> {
+    private RectHV rect;
+    public RectIterable(RectHV rect) {
+      this.rect = rect;
+    }
+    public Iterator<Point2D> iterator() {
+      return new RectIterator(rect);
+    }
+  }
+  
+  private class RectIterator implements Iterator<Point2D> {
+    
+    private RectIterator(RectHV rect) {
+    }
+    
+    public boolean hasNext() {
+      return false;
+    }
+    
+    public Point2D next() {
+      return null;
+    }
   }
   
   public Point2D nearest(Point2D p) {
