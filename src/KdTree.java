@@ -150,15 +150,60 @@ public class KdTree {
   
   private class RectIterator implements Iterator<Point2D> {
     
+    private Vector<Point2D> points;
+    private RectHV rect;
+    
     private RectIterator(RectHV rect) {
+      
+      if (root == null) throw new NullPointerException();
+      
+      this.rect = rect;
+      this.points = new Vector<Point2D>();
+      
+      if (rect.xmax() < root.value.x()) checkLeft(root.left);
+      else if (rect.xmin() > root.value.x()) checkRight(root.right);
+      else {
+        checkLeft(root.left);
+        checkRight(root.right);
+      }
+    }
+    
+    private void checkLeft(Node left) {
+      if (left != null) {
+        if (rect.contains(left.value)) points.add(left.value);
+        
+        if (left.compareX && rect.xmax() < left.value.x()) checkLeft(left.left);
+        else if (left.compareX && rect.xmin() > left.value.x()) checkRight(left.right);
+        else if (!left.compareX && rect.ymax() < left.value.y()) checkLeft(left.left);
+        else if (!left.compareX && rect.ymin() > left.value.y()) checkRight(left.right);
+        else {
+          checkLeft(left.left);
+          checkRight(left.right);
+        }
+      }
+    }
+    
+    private void checkRight(Node right) {
+      if (right != null) {
+        if (rect.contains(right.value)) points.add(right.value);
+        
+        if (right.compareX && rect.xmax() < right.value.x()) checkLeft(right.left);
+        else if (right.compareX && rect.xmin() > right.value.x()) checkRight(right.right);
+        else if (!right.compareX && rect.ymax() < right.value.y()) checkLeft(right.left);
+        else if (!right.compareX && rect.ymin() > right.value.y()) checkRight(right.right);
+        else {
+          checkLeft(right.left);
+          checkRight(right.right);
+        }
+      }
     }
     
     public boolean hasNext() {
-      return false;
+      return points.isEmpty();
     }
     
     public Point2D next() {
-      return null;
+      return points.remove(0);
     }
   }
   
