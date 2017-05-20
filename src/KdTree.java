@@ -1,4 +1,5 @@
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Vector;
 
 import edu.princeton.cs.algs4.Point2D;
@@ -10,10 +11,10 @@ public class KdTree {
   private int count;
   
   private class Node {
-    Node left;
-    Node right;
-    Point2D value;
-    boolean compareX;
+    private Node left;
+    private Node right;
+    private Point2D value;
+    private boolean compareX;
   }
   
   public KdTree() {
@@ -30,6 +31,8 @@ public class KdTree {
   }
   
   public void insert(Point2D p) {
+    if (p == null) throw new NullPointerException();
+    if (contains(p)) return;
     if (root == null) {
       root = new Node();
       root.left = null;
@@ -132,13 +135,11 @@ public class KdTree {
   }
   
   public Iterable<Point2D> range(RectHV rect) {
-    if (rect == null)
-      throw new NullPointerException();
-    
+    if (rect == null) throw new NullPointerException();
     return new RectIterable(rect);
   }
   
-  public class RectIterable implements Iterable<Point2D> {
+  private class RectIterable implements Iterable<Point2D> {
     private RectHV rect;
     public RectIterable(RectHV rect) {
       this.rect = rect;
@@ -163,6 +164,7 @@ public class KdTree {
       if (rect.xmax() < root.value.x()) checkLeft(root.left);
       else if (rect.xmin() > root.value.x()) checkRight(root.right);
       else {
+        if (rect.contains(root.value)) points.add(root.value);
         checkLeft(root.left);
         checkRight(root.right);
       }
@@ -199,10 +201,11 @@ public class KdTree {
     }
     
     public boolean hasNext() {
-      return points.isEmpty();
+      return !points.isEmpty();
     }
     
     public Point2D next() {
+      if (points.isEmpty()) throw new NoSuchElementException();
       return points.remove(0);
     }
   }
@@ -242,7 +245,7 @@ public class KdTree {
         if (p.distanceTo(leftSubTree) < (left.value.x() - p.x())) return leftSubTree;
         rightSubTree = checkRight(left.right, closest, p);
       }
-      else if (left.compareX && p.x() > left.value.x()){
+      else if (left.compareX && p.x() > left.value.x()) {
         rightSubTree = checkRight(left.right, closest, p);
         if (p.distanceTo(rightSubTree) < (p.x() - left.value.x())) return rightSubTree;
         leftSubTree = checkLeft(left.left, closest, p);
@@ -275,7 +278,7 @@ public class KdTree {
         if (p.distanceTo(leftSubTree) < (right.value.x() - p.x())) return leftSubTree;
         rightSubTree = checkRight(right.right, closest, p);
       }
-      else if (right.compareX && p.x() > right.value.x()){
+      else if (right.compareX && p.x() > right.value.x()) {
         rightSubTree = checkRight(right.right, closest, p);
         if (p.distanceTo(rightSubTree) < (p.x() - right.value.x())) return rightSubTree;
         leftSubTree = checkLeft(right.left, closest, p);
