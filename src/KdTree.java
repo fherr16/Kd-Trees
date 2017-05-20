@@ -1,3 +1,4 @@
+import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Vector;
@@ -43,7 +44,7 @@ public class KdTree {
     }
     else {
       Node transverse = root;
-      
+            
       while (transverse != null) {
         if (transverse.compareX) {
           if (transverse.value.x() > p.x()) {
@@ -211,91 +212,90 @@ public class KdTree {
   }
   
   public Point2D nearest(Point2D p) {
-    if (root == null)
-      throw new NullPointerException();
+    if (root == null) throw new NullPointerException();
     
     Point2D closest = root.value;
     Point2D leftSubTree, rightSubTree;
     
-    if (p.x() < root.value.x()) {
+    if (Double.compare(p.x(), root.value.x()) < 0) {
       leftSubTree = checkLeft(root.left, closest, p);
-      if (p.distanceTo(leftSubTree) < (root.value.x() - p.x())) return leftSubTree;
+      if (Double.compare(p.distanceTo(leftSubTree), (root.value.x() - p.x())) < 0) return leftSubTree;
       rightSubTree = checkRight(root.right, closest, p);
     }
     else {
       rightSubTree = checkRight(root.right, closest, p);
-      if (p.distanceTo(rightSubTree) < (p.x() - root.value.x())) return rightSubTree;
+      if (Double.compare(p.distanceTo(rightSubTree), (p.x() - root.value.x())) < 0) return rightSubTree;
       leftSubTree = checkLeft(root.left, closest, p);
     }
         
-    if (p.distanceTo(leftSubTree) < p.distanceTo(closest)) closest = leftSubTree;
-    if (p.distanceTo(rightSubTree) < p.distanceTo(closest)) closest = rightSubTree;
+    if (Double.compare(p.distanceTo(leftSubTree), p.distanceTo(closest)) < 0) closest = leftSubTree;
+    if (Double.compare(p.distanceTo(rightSubTree), p.distanceTo(closest)) < 0) closest = rightSubTree;   
     
     return closest;
   }
   
   private Point2D checkLeft(Node left, Point2D closest, Point2D p) {
     if (left != null) {
-      if (p.distanceTo(left.value) < p.distanceTo(closest)) closest = left.value;
+      if(Double.compare(p.distanceTo(left.value), p.distanceTo(closest)) < 0) closest = left.value;
       
       Point2D leftSubTree, rightSubTree;
       
-      if (left.compareX && p.x() < left.value.x()) {
+      if (left.compareX && Double.compare(p.x(), left.value.x()) < 0) {
         leftSubTree = checkLeft(left.left, closest, p);
-        if (p.distanceTo(leftSubTree) < (left.value.x() - p.x())) return leftSubTree;
+        if (Double.compare(p.distanceTo(leftSubTree), (left.value.x() - p.x())) < 0) return leftSubTree;
         rightSubTree = checkRight(left.right, closest, p);
       }
-      else if (left.compareX && p.x() > left.value.x()) {
+      else if (left.compareX && Double.compare(p.x(), left.value.x()) > 0) {
         rightSubTree = checkRight(left.right, closest, p);
-        if (p.distanceTo(rightSubTree) < (p.x() - left.value.x())) return rightSubTree;
+        if (Double.compare(p.distanceTo(rightSubTree), (p.x() - left.value.x())) < 0) return rightSubTree;
         leftSubTree = checkLeft(left.left, closest, p);
       }
-      else if (!left.compareX && p.y() < left.value.y()) {
+      else if (!left.compareX && Double.compare(p.y(), left.value.y()) < 0) {
         leftSubTree = checkLeft(left.left, closest, p);
-        if (p.distanceTo(leftSubTree) < (left.value.y() - p.y())) return leftSubTree;
+        if (Double.compare(p.distanceTo(leftSubTree), (left.value.y() - p.y())) < 0) return leftSubTree;
         rightSubTree = checkRight(left.right, closest, p);
       }
       else {
         rightSubTree = checkRight(left.right, closest, p);
-        if (p.distanceTo(rightSubTree) < (p.y() - left.value.y())) return rightSubTree;
+        if (Double.compare(p.distanceTo(rightSubTree), (p.y() - left.value.y())) < 0) return rightSubTree;
         leftSubTree = checkLeft(left.left, closest, p);
       }
       
-      if (p.distanceTo(leftSubTree) < p.distanceTo(closest)) closest = leftSubTree;
-      if (p.distanceTo(rightSubTree) < p.distanceTo(closest)) closest = rightSubTree;
+      if (Double.compare(p.distanceTo(leftSubTree), p.distanceTo(closest)) < 0) closest = leftSubTree;
+      if (Double.compare(p.distanceTo(rightSubTree), p.distanceTo(closest)) < 0) closest = rightSubTree;
     }
     return closest;
   }
   
   private Point2D checkRight(Node right, Point2D closest, Point2D p) {
     if (right != null) {
-      if (p.distanceTo(right.value) < p.distanceTo(closest)) closest = right.value;
-      
+      if (Double.compare(p.distanceTo(right.value), p.distanceTo(closest)) < 0) closest = right.value;
+
       Point2D leftSubTree, rightSubTree;
-      
-      if (right.compareX && p.x() < right.value.x()) {
+
+      if (right.compareX && Double.compare(p.x(), right.value.x()) < 0) {
         leftSubTree = checkLeft(right.left, closest, p);
-        if (p.distanceTo(leftSubTree) < (right.value.x() - p.x())) return leftSubTree;
+        if (Double.compare(p.distanceTo(leftSubTree), (right.value.x() - p.x())) < 0) return leftSubTree;
         rightSubTree = checkRight(right.right, closest, p);
       }
-      else if (right.compareX && p.x() > right.value.x()) {
+      else if (right.compareX && Double.compare(p.x(), right.value.x()) > 0) {
         rightSubTree = checkRight(right.right, closest, p);
-        if (p.distanceTo(rightSubTree) < (p.x() - right.value.x())) return rightSubTree;
+        if (Double.compare(p.distanceTo(rightSubTree), (p.x() - right.value.x())) < 0) return rightSubTree;
         leftSubTree = checkLeft(right.left, closest, p);
       }
-      else if (!right.compareX && p.y() < right.value.y()) {
+      else if (!right.compareX && Double.compare(p.y(), right.value.y()) < 0) {
         leftSubTree = checkLeft(right.left, closest, p);
-        if (p.distanceTo(leftSubTree) < (right.value.y() - p.y())) return leftSubTree;
+        if (Double.compare(p.distanceTo(leftSubTree), (right.value.y() - p.y())) < 0) return leftSubTree;
         rightSubTree = checkRight(right.right, closest, p);
       }
       else {
         rightSubTree = checkRight(right.right, closest, p);
-        if (p.distanceTo(rightSubTree) < (p.y() - right.value.y())) return rightSubTree;
+        if (Double.compare(p.distanceTo(rightSubTree), (p.y() - right.value.y())) < 0) return rightSubTree;
         leftSubTree = checkLeft(right.left, closest, p);
       }
       
-      if (p.distanceTo(leftSubTree) < p.distanceTo(closest)) closest = leftSubTree;
-      if (p.distanceTo(rightSubTree) < p.distanceTo(closest)) closest = rightSubTree;
+      if (Double.compare(p.distanceTo(leftSubTree), p.distanceTo(closest)) < 0) closest = leftSubTree;
+      if (Double.compare(p.distanceTo(rightSubTree), p.distanceTo(closest)) < 0) closest = rightSubTree;
     }
     return closest;
   }
