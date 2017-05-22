@@ -13,9 +13,6 @@ public class PointSET {
     private Vector<Point2D> list;
     
     private RectIterator(RectHV rect) {
-      if (set.isEmpty()) throw new NullPointerException();
-      if (rect == null) throw new NullPointerException();
-
       list = new Vector<Point2D>();
       
       for (Point2D p : set)
@@ -77,9 +74,10 @@ public class PointSET {
   
   public Point2D nearest(Point2D p) {
     if (p == null) throw new NullPointerException();
-    if (set.isEmpty()) throw new NoSuchElementException();
+    if (set.isEmpty()) return null;
     
     Point2D closest = set.min();
+    
     for (Point2D point : set)
       if (p.distanceTo(point) < p.distanceTo(closest))
         closest = point;
