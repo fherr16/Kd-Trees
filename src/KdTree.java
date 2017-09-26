@@ -217,7 +217,7 @@ public class KdTree {
       if (p.distanceTo(rightChamp) < (p.x() - root.value.x())) return rightChamp;
       leftChamp = checkLeft(root.left, root.value, p);
     }
-        
+    
     if (p.distanceTo(leftChamp) < p.distanceTo(rightChamp)) return leftChamp;
     else return rightChamp;   
     
